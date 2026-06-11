@@ -1,0 +1,51 @@
+{% extends "leave_app/base.html" %}
+{% block content %}
+<section class="auth-card wide">
+    <h1>Employee Sign Up</h1>
+    <form method="post" class="fetch-row">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="fetch">
+        <input name="fetch_id" placeholder="Enter Employee ID to fetch from Excel">
+        <button type="submit">Fetch Employee Data</button>
+    </form>
+
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="signup">
+        <div>
+            <label>Employee ID</label>
+            <input name="employee_id" value="{{ fetched_employee.employee_id|default:'' }}" required>
+        </div>
+        <div>
+            <label>Create Password</label>
+            <input name="password" type="password" required>
+        </div>
+        <div>
+            <label>Full Name</label>
+            <input name="name" value="{{ fetched_employee.name|default:'' }}" required>
+        </div>
+        <div>
+            <label>Grade/Band</label>
+            <input name="grade" value="{{ fetched_employee.grade|default:'' }}" required>
+        </div>
+        <div>
+            <label>Joining Date</label>
+            <input name="joining_date" type="date">
+        </div>
+        <div>
+            <label>PL Taken</label>
+            <input name="pl_taken" type="number" min="0" value="{{ fetched_employee.PL_taken|default:0 }}">
+        </div>
+        <div>
+            <label>CL Taken</label>
+            <input name="cl_taken" type="number" min="0" value="{{ fetched_employee.CL_taken|default:0 }}">
+        </div>
+        <div>
+            <label>SL Taken</label>
+            <input name="sl_taken" type="number" min="0" value="{{ fetched_employee.SL_taken|default:0 }}">
+        </div>
+        <button type="submit" class="full">Sign Up</button>
+    </form>
+    <p class="switch-link">Already registered? <a href="{% url 'login' %}">Login</a></p>
+</section>
+{% endblock %}

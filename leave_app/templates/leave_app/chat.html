@@ -1,0 +1,133 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave Policy Assistant</title>
+
+    <link rel="stylesheet" href="{% static 'leave_app/styles.css' %}">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+
+
+        <div class="user-card">
+            <h3>{{ employee.name }}</h3>
+            <p><strong>ID:</strong> {{ employee.employee_id }}</p>
+            <p><strong>Grade/Band:</strong> {{ employee.grade }}</p>
+        </div>
+
+        <!-- LEAVE TABLE -->
+        <table class="leave-table">
+            <thead>
+                <tr>
+                    <th>Leave Type</th>
+                    <th>Taken</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>PL</td>
+                    <td>{{ employee.PL_taken }}</td>
+                </tr>
+
+                <tr>
+                    <td>CL</td>
+                    <td>{{ employee.CL_taken }}</td>
+                </tr>
+
+                <tr>
+                    <td>SL</td>
+                    <td>{{ employee.SL_taken }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+            Logout
+        </a>
+    </div>
+
+
+    <!-- MAIN SCREEN -->
+    <div class="main-content" id="main-content">
+
+        <!-- HEADER -->
+        <div class="chat-header">
+            <h1> Personalized Leave Policy Assistant</h1>
+            <p>
+                Welcome, {{ employee.name }}.
+                Ask your leave question.
+            </p>
+        </div>
+
+        <!-- CHAT -->
+        <div class="chat-box" id="chatBox">
+
+            {% for msg in chat_messages %}
+
+                {% if msg.role == "user" %}
+                    <div class="message user-message">
+                        {{ msg.content }}
+                    </div>
+
+                {% else %}
+                    <div class="message assistant-message">
+                        <strong>Assistant</strong><br><br>
+
+                        <!-- SAFE REQUIRED -->
+                        {{ msg.content|safe }}
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- INPUT -->
+        <form method="POST" class="chat-form">
+            {% csrf_token %}
+
+            <input
+                type="text"
+                name="query"
+                placeholder="Ask your leave question..."
+                required
+            >
+
+            <button type="submit">
+                Send
+            </button>
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const mainContent = document.getElementById("main-content");
+        const button = document.querySelector(".sidebar-toggle");
+
+        sidebar.classList.toggle("collapsed");
+        mainContent.classList.toggle("expanded");
+        button.classList.toggle("closed");
+    }
+
+    // Auto scroll to bottom
+    const chatBox = document.getElementById("chatBox");
+    chatBox.scrollTop = chatBox.scrollHeight;
+</script>
+
+</body>
+</html>
